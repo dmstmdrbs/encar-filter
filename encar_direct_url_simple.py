@@ -105,10 +105,14 @@ class EncarCrawler:
                     region = region_element.text.strip()
                 except Exception:
                     region = ""
-                # ... (기존 제목, 상세 등 추출) ...
+                # 제목 추출: <a> 태그의 텍스트 전체를 합침
+                try:
+                    a_tag = item.find_element(By.CSS_SELECTOR, "td.inf a")
+                    title = a_tag.text.strip()
+                except Exception:
+                    title = ""
                
                 detail_link = f"https://fem.encar.com/cars/detail/{car_id}"
-                title = "..."  # (제목 추출 코드)
                 detail_info = "..."  # (상세정보 추출 코드)
                 listings.append({
                     'id': car_id,
@@ -342,7 +346,7 @@ if __name__ == "__main__":
     search_url = "http://www.encar.com/dc/dc_carsearchlist.do?carType=kor#!%7B%22action%22%3A%22(And.Hidden.N._.Options.%ED%81%AC%EB%A3%A8%EC%A6%88%20%EC%BB%A8%ED%8A%B8%EB%A1%A4(%EC%96%B4%EB%8C%91%ED%8B%B0%EB%B8%8C_)._.Options.360%EB%8F%84%20%EC%96%B4%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EB%B7%B0._.(C.CarType.Y._.(C.Manufacturer.%EA%B8%B0%EC%95%84._.(C.ModelGroup.%EC%8A%A4%ED%8C%85%EC%96%B4._.(C.Model.%EC%8A%A4%ED%8C%85%EC%96%B4._.BadgeGroup.%EA%B0%80%EC%86%94%EB%A6%B0%202000cc.)))))%22%2C%22toggle%22%3A%7B%7D%2C%22layer%22%3A%22%22%2C%22sort%22%3A%22ModifiedDate%22%2C%22page%22%3A1%2C%22limit%22%3A%22300%22%2C%22searchKey%22%3A%22%22%2C%22loginCheck%22%3Afalse%7D"
     search_url = set_limit_in_search_url(search_url, 1000)
     check_interval = 600
-    repo = CarListingRepository("known_listings.json", "good_cars.json")
+    repo = CarListingRepository("public/known_listings.json", "public/good_cars.json")
     crawler = EncarCrawler()
     filter = CarConditionFilter()
     
